@@ -13,47 +13,47 @@ framework:
                 arguments: [status]
             supports: [AppBundle\Entity\Post]
             places:
-                - drafted
-                - content_review_requested
-                - spellcheck_review_requested
-                - content_changes_requested
-                - spellcheck_changes_requested
-                - content_approved
-                - spellcheck_approved
-                - published
-                - archived
+                - !php/const:AppBundle\Entity\Post::STATE_DRAFTED
+                - !php/const:AppBundle\Entity\Post::STATE_CONTENT_REVIEW_REQUESTED
+                - !php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_REVIEW_REQUESTED
+                - !php/const:AppBundle\Entity\Post::STATE_CONTENT_CHANGES_REQUESTED
+                - !php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_CHANGES_REQUESTED
+                - !php/const:AppBundle\Entity\Post::STATE_CONTENT_APPROVED
+                - !php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_APPROVED
+                - !php/const:AppBundle\Entity\Post::STATE_PUBLISHED
+                - !php/const:AppBundle\Entity\Post::STATE_ARCHIVED
             transitions:
                 request_review:
-                    from: [drafted]
-                    to: [content_review_requested, spellcheck_review_requested]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_DRAFTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_REVIEW_REQUESTED, !php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_REVIEW_REQUESTED]
                 request_content_changes:
                     guard: is_granted('ROLE_ADMIN')
-                    from: [content_review_requested]
-                    to: [content_changes_requested]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_REVIEW_REQUESTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_CHANGES_REQUESTED]
                 apply_content_changes:
-                    from: [content_changes_requested]
-                    to: [content_review_requested]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_CHANGES_REQUESTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_REVIEW_REQUESTED]
                 request_spellcheck_changes:
                     guard: is_granted('ROLE_ADMIN')
-                    from: [spellcheck_review_requested]
-                    to: [spellcheck_changes_requested]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_REVIEW_REQUESTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_CHANGES_REQUESTED]
                 apply_spellcheck_changes:
                     guard: is_granted('ROLE_ADMIN')
-                    from: [spellcheck_changes_requested]
-                    to: [spellcheck_review_requested]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_CHANGES_REQUESTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_REVIEW_REQUESTED]
                 accept_content:
                     guard: is_granted('ROLE_ADMIN')
-                    from: [content_review_requested]
-                    to: [content_approved]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_REVIEW_REQUESTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_APPROVED]
                 accept_spellcheck:
-                    from: [spellcheck_review_requested]
-                    to: [spellcheck_approved]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_REVIEW_REQUESTED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_APPROVED]
                 publish:
-                    from: [content_approved, spellcheck_approved]
-                    to: [published]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_CONTENT_APPROVED, !php/const:AppBundle\Entity\Post::STATE_SPELLCHECK_APPROVED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_PUBLISHED]
                 republish:
-                    from: [archived]
-                    to: [published]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_ARCHIVED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_PUBLISHED]
                 archive:
-                    from: [published]
-                    to: [archived]
+                    from: [!php/const:AppBundle\Entity\Post::STATE_PUBLISHED]
+                    to: [!php/const:AppBundle\Entity\Post::STATE_ARCHIVED]

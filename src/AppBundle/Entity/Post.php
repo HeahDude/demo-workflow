@@ -33,6 +33,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Post
 {
     public const STATE_DRAFTED = 'drafted';
+    public const STATE_CONTENT_REVIEW_REQUESTED = 'content_review_requested';
+    public const STATE_SPELLCHECK_REVIEW_REQUESTED = 'spellcheck_review_requested';
+    public const STATE_CONTENT_CHANGES_REQUESTED = 'content_changes_requested';
+    public const STATE_SPELLCHECK_CHANGES_REQUESTED = 'spellcheck_changes_requested';
+    public const STATE_CONTENT_APPROVED = 'content_approved';
+    public const STATE_SPELLCHECK_APPROVED = 'spellcheck_approved';
+    public const STATE_PUBLISHED = 'published';
+    public const STATE_ARCHIVED = 'archived';
 
     /**
      * Use constants to define configuration options that rarely change instead
