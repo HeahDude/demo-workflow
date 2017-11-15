@@ -1,6 +1,12 @@
 <?php
 
-class PostBitmaskMarkingStore implements \Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface
+namespace AppBundle\WorkFlow;
+
+use AppBundle\Entity\Post;
+use Symfony\Component\Workflow\Marking;
+use Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface;
+
+class PostBitmaskMarkingStore implements MarkingStoreInterface
 {
 
     /**
@@ -12,7 +18,20 @@ class PostBitmaskMarkingStore implements \Symfony\Component\Workflow\MarkingStor
      */
     public function getMarking($subject)
     {
-        // TODO: Implement getMarking() method.
+        if (!$subject instanceof Post) {
+            throw new \InvalidArgumentException('Expecting "%s" but got ...');
+        }
+
+        $statuses = $subject->getStatus();
+        $places = [];
+
+        foreach (Post::STATES as $place => $state) {
+            if ($statuses & $state) {
+                $places[$place] = 1;
+            }
+        }
+
+        return new Marking($places);
     }
 
     /**
@@ -21,8 +40,18 @@ class PostBitmaskMarkingStore implements \Symfony\Component\Workflow\MarkingStor
      * @param object                              $subject A subject
      * @param \Symfony\Component\Workflow\Marking $marking A marking
      */
-    public function setMarking($subject, \Symfony\Component\Workflow\Marking $marking)
+    public function setMarking($subject, Marking $marking)
     {
-        // TODO: Implement setMarking() method.
+        if (!$subject instanceof Post) {
+            throw new \InvalidArgumentException('Expecting "%s" but got ...');
+        }
+
+        $mask = 0;
+
+        foreach ($marking->getPlaces() as $place) {
+            $mask += Post::STATES[$place];
+        }
+
+        $subject->setStatus($mask);
     }
 }

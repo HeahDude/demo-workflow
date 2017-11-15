@@ -42,6 +42,18 @@ class Post
     public const STATE_PUBLISHED = 'published';
     public const STATE_ARCHIVED = 'archived';
 
+    public const STATES = [
+        self::STATE_DRAFTED => 1,
+        self::STATE_CONTENT_REVIEW_REQUESTED => 2,
+        self::STATE_SPELLCHECK_REVIEW_REQUESTED => 4,
+        self::STATE_CONTENT_CHANGES_REQUESTED => 8,
+        self::STATE_SPELLCHECK_CHANGES_REQUESTED => 16,
+        self::STATE_CONTENT_APPROVED => 32,
+        self::STATE_SPELLCHECK_APPROVED => 64,
+        self::STATE_PUBLISHED => 128,
+        self::STATE_ARCHIVED => 256,
+    ];
+
     /**
      * Use constants to define configuration options that rarely change instead
      * of specifying them in app/config/config.yml.

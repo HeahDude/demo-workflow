@@ -9,8 +9,7 @@ framework:
         blog_post:
             type: workflow
             marking_store:
-                type: multiple_state
-                arguments: [status]
+                service: AppBundle\WorkFlow\PostBitmaskMarkingStore
             supports: [AppBundle\Entity\Post]
             places:
                 - !php/const:AppBundle\Entity\Post::STATE_DRAFTED
