@@ -1,0 +1,55 @@
+# These are the configuration parameters that define the application's behavior
+# and which are independent from the underlying technical infrastructure
+# See https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+# Basic configuration for the Symfony framework features
+framework:
+    workflows:
+        blog_post:
+            type: workflow
+            marking_store:
+                type: multiple_state
+                arguments: [status]
+            supports: [AppBundle\Entity\Post]
+            places:
+                - drafted
+                - content_review_requested
+                - spellcheck_review_requested
+                - content_changes_requested
+                - spellcheck_changes_requested
+                - content_approved
+                - spellcheck_approved
+                - published
+                - archived
+            transitions:
+                request_review:
+                    from: [drafted]
+                    to: [content_review_requested, spellcheck_review_requested]
+                request_content_changes:
+                    from: [content_review_requested]
+                    to: [content_changes_requested]
+                apply_content_changes:
+                    from: [content_changes_requested]
+                    to: [content_review_requested]
+                request_spellcheck_changes:
+                    from: [spellcheck_review_requested]
+                    to: [spellcheck_changes_requested]
+                apply_spellcheck_changes:
+                    from: [spellcheck_changes_requested]
+                    to: [spellcheck_review_requested]
+                accept_content:
+                    from: [content_review_requested]
+                    to: [content_approved]
+                accept_spellcheck:
+                    from: [spellcheck_review_requested]
+                    to: [spellcheck_approved]
+                publish:
+                    from: [content_approved, spellcheck_approved]
+                    to: [published]
+                republish:
+                    from: [archived]
+                    to: [published]
+                archive:
+                    from: [published]
+                    to: [archived]

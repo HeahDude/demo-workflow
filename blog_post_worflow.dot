@@ -1,0 +1,10 @@
+digraph workflow {
+  ratio="compress" rankdir="LR"
+  node [fontsize="9" fontname="Arial" color="#333333" fillcolor="lightblue" fixedsize="1" width="1"];
+  edge [fontsize="9" fontname="Arial" color="#333333" arrowhead="normal" arrowsize="0.5"];
+
+  place_drafted [label="drafted", shape=circle, style="filled"];
+  place_published [label="published", shape=circle];
+  place_drafted -> place_published [label="publish" style="solid"];
+}
+
