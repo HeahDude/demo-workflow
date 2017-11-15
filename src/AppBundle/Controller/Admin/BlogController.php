@@ -139,10 +139,25 @@ class BlogController extends Controller
     {
         $this->denyAccessUnlessGranted('edit', $post, 'Posts can only be edited by their authors.');
 
-        $form = $this->createForm(PostType::class, $post);
+        $workflow = $this->get('workflow.blog_post');
+        $form = $this->createForm(PostType::class, $post)
+            ->add('request_review', SubmitType::class, [
+                'disabled' => !$workflow->can($post, 'request_review'),
+            ])
+            ->add('apply_content_changes', SubmitType::class, [
+                'disabled' => !$workflow->can($post, 'apply_content_changes'),
+            ])
+            ->add('apply_spellcheck_changes', SubmitType::class, [
+                'disabled' => !$workflow->can($post, 'apply_spellcheck_changes'),
+            ])
+        ;
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('request_review')->isClicked()) {
+                $workflow->apply($post, 'request_review');
+            }
+
             $post->setSlug($slugger->slugify($post->getTitle()));
             $this->getDoctrine()->getManager()->flush();
 
@@ -154,6 +169,28 @@ class BlogController extends Controller
         return $this->render('admin/blog/edit.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/{id}/apply/{transition}", requirements={"id": "\d+"}, name="admin_post_transition")
+     * @Method("GET")
+     */
+    public function applyTransition(Post $post, string $transition)
+    {
+        $workflow = $this->get('workflow.blog_post');
+
+        if (!$workflow->can($post, $transition)) {
+            throw $this->createNotFoundException();
+        }
+
+        $workflow->apply($post, $transition);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('admin_post_show', [
+            'id' => $post->getId(),
         ]);
     }
 

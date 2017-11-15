@@ -20,6 +20,11 @@
     </div>
 
     <div class="section actions">
+        {% for transition in workflow_transitions(post) %}
+            <a class="button" href="{{ path('admin_post_transition', {id: post.id, transition: transition.name}) }}">
+                {{ transition.name|humanize }}
+            </a>
+        {% endfor %}
         {{ include('admin/blog/_delete_form.html.twig', {post: post}, with_context = false) }}
     </div>
 

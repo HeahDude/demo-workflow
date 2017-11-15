@@ -32,6 +32,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Post
 {
+    public const STATE_DRAFTED = 'drafted';
+
     /**
      * Use constants to define configuration options that rarely change instead
      * of specifying them in app/config/config.yml.
@@ -118,6 +120,11 @@ class Post
      * @Assert\Count(max="4", maxMessage="post.too_many_tags")
      */
     private $tags;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $status;
 
     public function __construct()
     {
@@ -243,5 +250,18 @@ class Post
     public function getTags()
     {
         return $this->tags;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }

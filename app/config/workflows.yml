@@ -27,18 +27,22 @@ framework:
                     from: [drafted]
                     to: [content_review_requested, spellcheck_review_requested]
                 request_content_changes:
+                    guard: is_granted('ROLE_ADMIN')
                     from: [content_review_requested]
                     to: [content_changes_requested]
                 apply_content_changes:
                     from: [content_changes_requested]
                     to: [content_review_requested]
                 request_spellcheck_changes:
+                    guard: is_granted('ROLE_ADMIN')
                     from: [spellcheck_review_requested]
                     to: [spellcheck_changes_requested]
                 apply_spellcheck_changes:
+                    guard: is_granted('ROLE_ADMIN')
                     from: [spellcheck_changes_requested]
                     to: [spellcheck_review_requested]
                 accept_content:
+                    guard: is_granted('ROLE_ADMIN')
                     from: [content_review_requested]
                     to: [content_approved]
                 accept_spellcheck:
